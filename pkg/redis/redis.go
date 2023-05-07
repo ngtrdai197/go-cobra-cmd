@@ -8,9 +8,9 @@ import (
 )
 
 const (
-	maxRetryBackoff = 500 * time.Millisecond
-	maxRetries      = 5
-	writeTimeout    = 3 * time.Second
+	MAX_RETRY_BACKOFF = 500 * time.Millisecond
+	MAX_RETRIES       = 5
+	WRITE_TIMEOUT     = 3 * time.Second
 )
 
 type Adaptor struct {
@@ -27,13 +27,12 @@ func NewRedisConnection(redisURL string) (*Adaptor, error) {
 	redisClient := redis.NewClient(&redis.Options{
 		Addr:            opts.Addr,
 		DB:              opts.DB,
-		MaxRetries:      maxRetries,
-		MaxRetryBackoff: maxRetryBackoff,
-		WriteTimeout:    writeTimeout,
+		MaxRetries:      MAX_RETRIES,
+		MaxRetryBackoff: MAX_RETRY_BACKOFF,
+		WriteTimeout:    WRITE_TIMEOUT,
 	})
 
 	return &Adaptor{
 		Redis: redisClient,
 	}, nil
-
 }

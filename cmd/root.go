@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 var rootCmd = &cobra.Command{
@@ -21,10 +23,21 @@ var rootCmd = &cobra.Command{
 
 func init() {
 	cobra.OnInitialize(initDependencies)
-	fmt.Println("Init func called ")
+	log.Debug().Msg("Init func called")
 }
 
-func initDependencies() {}
+func initDependencies() {
+	initConfig()
+}
+
+func initConfig() {
+	viper.SetConfigFile(".env")
+
+	err := viper.ReadInConfig()
+	if err != nil {
+		panic(fmt.Errorf("Fatal error config file: %w", err))
+	}
+}
 
 func Execute() {
 	if err := rootCmd.Execute(); err != nil {

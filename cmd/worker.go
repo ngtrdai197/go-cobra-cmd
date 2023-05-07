@@ -4,8 +4,11 @@ import (
 	"fmt"
 
 	"github.com/go-playground/validator/v10"
+	"github.com/hibiken/asynq"
 	"github.com/ngtrdai197/cobra-cmd/config"
-	"github.com/ngtrdai197/cobra-cmd/pkg/redis"
+	"github.com/ngtrdai197/cobra-cmd/pkg/worker"
+	"github.com/ngtrdai197/cobra-cmd/pkg/worker/email_delivery"
+	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
 )
 
@@ -19,14 +22,39 @@ var workerCmd = &cobra.Command{
 			This application is a tool to generate the needed files
 			to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("Worker CMD called")
-
-		c, err := config.LoadConfig(validator.New())
+		c, err := config.GetConfig(validator.New())
 		if err != nil {
 			panic(fmt.Errorf("Config file invalidate with error: %w", err))
 		}
-		redis.NewRedisConnection(c.RedisUrl)
+
+		initWorkerServer(c)
 	},
+}
+
+func initWorkerServer(c *config.Config) {
+	s := asynq.NewServer(
+		asynq.RedisClientOpt{Addr: fmt.Sprintf("%s:%s", c.RedisHost, c.RedisPort), DB: c.RedisDb},
+		asynq.Config{
+			// Specify how many concurrent workers to use
+			Concurrency: 10,
+			// Optionally specify multiple queues with different priority.
+			Queues: map[string]int{
+				worker.QUEUE_PRIORITY_CRITICAL: 6,
+				worker.QUEUE_PRIORITY_DEFAULT:  3,
+				worker.QUEUE_PRIORITY_LOW:      1,
+			},
+			// See the godoc for other configuration options
+		},
+	)
+
+	// mux maps a type to a handler
+	mux := asynq.NewServeMux()
+	mux.HandleFunc(email_delivery.DELIVERY_EMAIL_QUEUE, email_delivery.HandleEmailDeliveryTask)
+
+	if err := s.Run(mux); err != nil {
+		log.Fatal().Msgf("Could not run delivery email worker: %v", err)
+	}
+	log.Info().Msg("Email delivery worker is running")
 }
 
 func init() {

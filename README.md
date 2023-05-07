@@ -11,7 +11,7 @@ Go version: go 1.20
 │   ├── config.go
 ├── cmd
 │   ├── root.go
-│   └── worker.go
+│   ├── worker.go
 ├── pkg
 │   ├── redis
 │   └── worker
