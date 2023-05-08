@@ -15,6 +15,7 @@ import (
 const (
 	TimeStepRetrySendKafka = 500
 	MaxRetrySendKafka      = 5
+	PoolSize               = 3
 )
 
 type Producer struct {
