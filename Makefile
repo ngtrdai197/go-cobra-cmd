@@ -1,4 +1,4 @@
-.PHONY: worker client
+.PHONY: worker client producer consumer
 
 # Delevery email client
 client:
@@ -7,3 +7,9 @@ client:
 # Delevery email worker
 worker:
 	go run main.go worker-cmd
+
+producer:
+	go run main.go kafka-producer-cmd
+
+consumer:
+	go run main.go kafka-consumer-cmd

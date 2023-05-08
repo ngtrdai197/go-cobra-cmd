@@ -8,18 +8,22 @@ import (
 )
 
 type Config struct {
-	AppEnv    string `mapstructure:"APP_ENV" validate:"required"`
-	RedisHost string `mapstructure:"REDIS_HOST" validate:"required"`
-	RedisPort string `mapstructure:"REDIS_PORT" validate:"required"`
-	RedisDb   int    `validate:"required"`
+	AppEnv                   string `mapstructure:"APP_ENV" validate:"required"`
+	RedisHost                string `mapstructure:"REDIS_HOST" validate:"required"`
+	RedisPort                string `mapstructure:"REDIS_PORT" validate:"required"`
+	RedisDb                  int    `validate:"required"`
+	KafkaBrokers             string `mapstructure:"KAFKA_BROKERS" validate:"required"`
+	KafkaCreateUserSendEmail string `mapstructure:"KAFKA_CREATE_USER_SEND_EMAIL" validate:"required"`
 }
 
 func GetConfig(validator *validator.Validate) (*Config, error) {
 	c := &Config{
-		AppEnv:    viper.GetString("APP_ENV"),
-		RedisHost: viper.GetString("REDIS_HOST"),
-		RedisPort: viper.GetString("REDIS_PORT"),
-		RedisDb:   viper.GetInt("REDIS_DB"),
+		AppEnv:                   viper.GetString("APP_ENV"),
+		RedisHost:                viper.GetString("REDIS_HOST"),
+		RedisPort:                viper.GetString("REDIS_PORT"),
+		RedisDb:                  viper.GetInt("REDIS_DB"),
+		KafkaBrokers:             viper.GetString("KAFKA_BROKERS"),
+		KafkaCreateUserSendEmail: viper.GetString("KAFKA_CREATE_USER_SEND_EMAIL"),
 	}
 	if err := validator.StructCtx(context.Background(), c); err != nil {
 		return nil, err

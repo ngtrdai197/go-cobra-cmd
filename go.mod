@@ -5,7 +5,10 @@ go 1.20
 require (
 	github.com/go-playground/validator/v10 v10.13.0
 	github.com/hibiken/asynq v0.24.1
+	github.com/pkg/errors v0.9.1
 	github.com/redis/go-redis/v9 v9.0.4
+	github.com/segmentio/kafka-go v0.4.40
+	github.com/sethvargo/go-retry v0.2.4
 	github.com/spf13/cobra v1.7.0
 	github.com/spf13/viper v1.15.0
 )
@@ -13,8 +16,10 @@ require (
 require (
 	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/google/uuid v1.3.0 // indirect
+	github.com/klauspost/compress v1.15.9 // indirect
 	github.com/mattn/go-colorable v0.1.12 // indirect
 	github.com/mattn/go-isatty v0.0.14 // indirect
+	github.com/pierrec/lz4/v4 v4.1.15 // indirect
 	github.com/robfig/cron/v3 v3.0.1 // indirect
 	golang.org/x/time v0.3.0 // indirect
 	google.golang.org/protobuf v1.30.0 // indirect
