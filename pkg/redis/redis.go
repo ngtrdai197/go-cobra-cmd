@@ -8,16 +8,16 @@ import (
 )
 
 const (
-	MAX_RETRY_BACKOFF = 500 * time.Millisecond
-	MAX_RETRIES       = 5
-	WRITE_TIMEOUT     = 3 * time.Second
+	MaxRetryBackoff = 500 * time.Millisecond
+	MaxRetries      = 5
+	WriteTimeout    = 3 * time.Second
 )
 
 type Adaptor struct {
 	Redis *redis.Client
 }
 
-// Pass redisURL with format localhost:6379/0
+// NewRedisConnection Pass redisURL with format localhost:6379/0
 func NewRedisConnection(redisURL string) (*Adaptor, error) {
 	opts, err := redis.ParseURL(redisURL)
 	if err != nil {
@@ -27,9 +27,9 @@ func NewRedisConnection(redisURL string) (*Adaptor, error) {
 	redisClient := redis.NewClient(&redis.Options{
 		Addr:            opts.Addr,
 		DB:              opts.DB,
-		MaxRetries:      MAX_RETRIES,
-		MaxRetryBackoff: MAX_RETRY_BACKOFF,
-		WriteTimeout:    WRITE_TIMEOUT,
+		MaxRetries:      MaxRetries,
+		MaxRetryBackoff: MaxRetryBackoff,
+		WriteTimeout:    WriteTimeout,
 	})
 
 	return &Adaptor{
