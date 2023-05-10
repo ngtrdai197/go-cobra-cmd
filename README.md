@@ -5,16 +5,26 @@ Go version: go 1.20
 ## Directory structure
 
 ```
-├── main.go
-├── .env
-├── config
-│   ├── config.go
 ├── cmd
 │   ├── root.go
 │   ├── worker.go
+│   ├── client.go
+│   ├── kafka-consumer.go
+│   ├── kafka-producer.go
+├── config
+│   ├── config.go
 ├── pkg
 │   ├── redis
+│       ├── redis.go
 │   └── worker
+│       ├── distributor.go
+│       ├── processor.go
+│       ├── email_delivery.go
+│       ├── ...
+│
+├── main.go
+├── .env.example
+├── Makefile
 ├── ...
 ...
 ```
