@@ -30,7 +30,7 @@ var kafkaConsumerCmd = &cobra.Command{
 
 		c, err := config.GetConfig(validator.New())
 		if err != nil {
-			panic(fmt.Errorf("Config file invalidate with error: %w", err))
+			panic(fmt.Errorf("config file invalidate with error: %w", err))
 		}
 		if err := initConsumer(ctx, c); err != nil {
 			log.Fatal().Err(err)
@@ -41,12 +41,15 @@ var kafkaConsumerCmd = &cobra.Command{
 func initConsumer(ctx context.Context, c *config.Config) error {
 	// Kafka Producer
 	kp := kafka.NewProducer(strings.Split(c.KafkaBrokers, ","), c)
-	defer kp.Close()
-
+	defer func(kp *kafka.Producer) {
+		err := kp.Close()
+		if err != nil {
+			log.Error().Msgf("close kafka producer with error %v", err)
+		}
+	}(kp)
+	readerMessageProcessor := kafka.NewReaderMessageProcessor(c)
 	cg := kafka.NewConsumerGroup(strings.Split(c.KafkaBrokers, ","), "create_user_send_email")
-
-	// TODO: Replace nil args to kafka writer and service worker process
-	go cg.ConsumeTopic(ctx, getConsumerGroupTopics(c), nil, kafka.PoolSize, nil)
+	go cg.ConsumeTopic(ctx, getConsumerGroupTopics(c), kp.W, kafka.PoolSize, readerMessageProcessor.ProcessMessages)
 	<-ctx.Done()
 	return nil
 }

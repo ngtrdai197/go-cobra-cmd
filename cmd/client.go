@@ -1,13 +1,13 @@
 package cmd
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/hibiken/asynq"
 	"github.com/ngtrdai197/cobra-cmd/config"
 	"github.com/ngtrdai197/cobra-cmd/pkg/worker"
-	"github.com/ngtrdai197/cobra-cmd/pkg/worker/email_delivery"
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
 )
@@ -27,23 +27,21 @@ var clientCmd = &cobra.Command{
 			panic(fmt.Errorf("Config file invalidate with error: %w", err))
 		}
 
-		initClient(c)
+		initClient(cmd.Context(), c)
 	},
 }
 
-func initClient(c *config.Config) {
-	client := asynq.NewClient(asynq.RedisClientOpt{Addr: fmt.Sprintf("%s:%s", c.RedisHost, c.RedisPort), DB: c.RedisDb})
-
-	task, err := email_delivery.NewEmailDeliveryTask(123, "Dai Nguyen 2")
+func initClient(ctx context.Context, c *config.Config) {
+	d := worker.NewRedisTaskDistributor(asynq.RedisClientOpt{
+		Addr: fmt.Sprintf("%s:%s", c.RedisHost, c.RedisPort), DB: c.RedisDb,
+	})
+	err := d.DistributeTaskEmailDelivery(ctx, &worker.EmailDeliveryPayload{
+		Name:  "Dai Nguyen",
+		Phone: "0375629888",
+	}, asynq.Queue(worker.QueuePriorityCritical))
 	if err != nil {
-		log.Fatal().Msgf("Error create task email delivery detail = %v", err)
+		log.Error().Msgf("Has error %s = %v", worker.DeliveryEmailQueue, err)
 	}
-	// Process the task immediately.
-	info, err := client.Enqueue(task, asynq.Queue(worker.QUEUE_PRIORITY_CRITICAL))
-	if err != nil {
-		log.Fatal().Msgf("Error add task email delivery into queue detail = %v", err)
-	}
-	log.Printf(" [*] Successfully enqueued task: %+v", info)
 }
 
 func init() {

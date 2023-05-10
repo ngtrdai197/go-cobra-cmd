@@ -1,10 +1,10 @@
 .PHONY: worker client producer consumer
 
-# Delevery email client
+# Delivery email client
 client:
 	go run main.go client-cmd
 
-# Delevery email worker
+# Delivery email worker
 worker:
 	go run main.go worker-cmd
 

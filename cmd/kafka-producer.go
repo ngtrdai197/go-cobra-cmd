@@ -23,10 +23,16 @@ var kafkaProducerCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		c, err := config.GetConfig(validator.New())
 		if err != nil {
-			panic(fmt.Errorf("Config file invalidate with error: %w", err))
+			panic(fmt.Errorf("config file invalidate with error: %w", err))
 		}
 		log.Info().Msg("kafkaProducerCmd")
-		kafka.NewProducer(strings.Split(c.KafkaBrokers, ","), c)
+		kp := kafka.NewProducer(strings.Split(c.KafkaBrokers, ","), c)
+		if err := kp.SendCreateUserEmailMessage(cmd.Context(), kafka.TestData{
+			Name:  "Dai Nguyen",
+			Phone: "023127832",
+		}); err != nil {
+			log.Error().Str("topic", c.KafkaCreateUserSendEmail).AnErr("error", err)
+		}
 	},
 }
 
