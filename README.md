@@ -36,10 +36,10 @@ Go version: go 1.20
 │   │   ├── example.go
 │   │   ├── ...
 │   ├── worker
-│   │    ├── distributor.go
-│   │    ├── processor.go
-│   │    ├── email_delivery.go
-│   │    ├── ...
+│   │   ├── distributor.go
+│   │   ├── processor.go
+│   │   ├── email_delivery.go
+│   │   ├── ...
 │
 ├── main.go
 ├── .env.example

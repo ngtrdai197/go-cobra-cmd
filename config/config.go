@@ -9,7 +9,7 @@ import (
 
 type Config struct {
 	AppEnv                   string `mapstructure:"APP_ENV" validate:"required"`
-	PublicApiAddress         string `mapstructure:"PublicApiAddress" validate:"required"`
+	PublicApiAddress         string `mapstructure:"PUBLIC_API_ADDRESS" validate:"required"`
 	RedisHost                string `mapstructure:"REDIS_HOST" validate:"required"`
 	RedisPort                string `mapstructure:"REDIS_PORT" validate:"required"`
 	DbDriver                 string `mapstructure:"DB_DRIVER" validate:"required"`
