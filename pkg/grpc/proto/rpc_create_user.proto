@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package pb;
+
+import "user.proto";
+
+option go_package = "github.com/ngtrdai197/cobra-cmd/pkg/grpc/pb";
+
+message CreateUserRequest {
+  string username = 1;
+  string full_name = 2;
+  string phone_number = 3;
+}
+
+message CreateUserResponse { User user = 1; }
+
+message GetUserRequest {
+  string username = 1;
+}
+
+message GetUserResponse { User user = 1; }

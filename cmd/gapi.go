@@ -4,16 +4,14 @@ import (
 	"fmt"
 
 	"github.com/go-playground/validator/v10"
-	"github.com/hibiken/asynq"
 	"github.com/ngtrdai197/cobra-cmd/config"
-	"github.com/ngtrdai197/cobra-cmd/pkg/worker"
-	"github.com/rs/zerolog/log"
+	gapi "github.com/ngtrdai197/cobra-cmd/pkg/grpc"
 	"github.com/spf13/cobra"
 )
 
-var workerCmd = &cobra.Command{
-	Use:   "worker-cmd",
-	Short: "Serve worker application",
+var gapiCmd = &cobra.Command{
+	Use:   "gapi-cmd",
+	Short: "Serve gRPC api application",
 	Long: `A longer description that spans multiple lines and likely contains
 			examples and usage of using your application. For example:
 
@@ -26,19 +24,15 @@ var workerCmd = &cobra.Command{
 			panic(fmt.Errorf("config file invalidate with error: %w", err))
 		}
 
-		initWorkerServer(c)
+		initGAPI(c)
 	},
 }
 
-func initWorkerServer(c *config.Config) {
-	processor := worker.NewRedisTaskProcessor(asynq.RedisClientOpt{Addr: fmt.Sprintf("%s:%s", c.RedisHost, c.RedisPort), DB: c.RedisDb})
-
-	processor.Start()
-	if err := processor.Start(); err != nil {
-		log.Fatal().Msgf("could not start task processor: %v", err)
-	}
+func initGAPI(c *config.Config) {
+	s := gapi.NewServer(c)
+	s.Start()
 }
 
 func init() {
-	rootCmd.AddCommand(workerCmd)
+	rootCmd.AddCommand(gapiCmd)
 }

@@ -33,6 +33,9 @@ func NewServer(c *config.Config) *PublicApiServer {
 
 func (s *PublicApiServer) setupRouter(c *config.Config) {
 	r := gin.Default()
+	gin.DebugPrintRouteFunc = func(httpMethod, absolutePath, handlerName string, nuHandlers int) {
+		log.Printf("endpoint %v %v %v %v\n", httpMethod, absolutePath, handlerName, nuHandlers)
+	}
 	if c.AppEnv != "develop" {
 		gin.SetMode(gin.ReleaseMode)
 	}

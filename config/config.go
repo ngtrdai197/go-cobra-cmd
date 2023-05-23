@@ -10,6 +10,7 @@ import (
 type Config struct {
 	AppEnv                   string `mapstructure:"APP_ENV" validate:"required"`
 	PublicApiAddress         string `mapstructure:"PUBLIC_API_ADDRESS" validate:"required"`
+	GrpcAddress              string `mapstructure:"GRPC_ADDRESS" validate:"required"`
 	RedisHost                string `mapstructure:"REDIS_HOST" validate:"required"`
 	RedisPort                string `mapstructure:"REDIS_PORT" validate:"required"`
 	DbDriver                 string `mapstructure:"DB_DRIVER" validate:"required"`
@@ -23,6 +24,7 @@ func GetConfig(validator *validator.Validate) (*Config, error) {
 	c := &Config{
 		AppEnv:                   viper.GetString("APP_ENV"),
 		PublicApiAddress:         viper.GetString("PUBLIC_API_ADDRESS"),
+		GrpcAddress:              viper.GetString("GRPC_ADDRESS"),
 		RedisHost:                viper.GetString("REDIS_HOST"),
 		RedisPort:                viper.GetString("REDIS_PORT"),
 		RedisDb:                  viper.GetInt("REDIS_DB"),

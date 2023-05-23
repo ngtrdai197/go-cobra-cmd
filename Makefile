@@ -3,7 +3,16 @@ include .env
 # Variables for binding arguments from cmd
 MIGRATION_FILE_NAME?=default_migration_file_name
 
-.PHONY: worker client producer consumer migration migrateup migrateup1 migratedown migratedown1 sqlc public-api
+.PHONY: worker client producer consumer migration migrateup migrateup1 migratedown migratedown1 sqlc public-api gapi-cmd proto
+
+gapi-cmd:
+	go run main.go gapi-cmd
+
+proto:
+	rm -f pkg/grpc/pb/*.go
+	protoc --proto_path=pkg/grpc/proto --go_out=pkg/grpc/pb --go_opt=paths=source_relative \
+	--go-grpc_out=pkg/grpc/pb --go-grpc_opt=paths=source_relative \
+	pkg/grpc/proto/*.proto
 
 public-api:
 	go run main.go public-api-cmd

@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package pb;
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/ngtrdai197/cobra-cmd/pkg/grpc/pb";
+
+message User {
+  string username = 1;
+  string full_name = 2;
+  string phone_number = 3;
+  google.protobuf.Timestamp created_at = 4;
+}

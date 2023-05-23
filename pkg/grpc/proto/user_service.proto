@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package pb;
+
+import "rpc_create_user.proto";
+
+option go_package = "github.com/ngtrdai197/cobra-cmd/pkg/grpc/pb";
+
+service UserService {
+  rpc CreateUser(CreateUserRequest) returns (CreateUserResponse) {}
+  rpc GetUser (GetUserRequest) returns (GetUserResponse);
+}
