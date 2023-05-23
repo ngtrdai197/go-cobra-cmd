@@ -101,3 +101,22 @@ export PATH="$PATH:$(go env GOPATH)/bin"
 ```
 
 If you want to test if the methods in the service of gRPC are running, you can install [BloomRPC Github](https://github.com/bloomrpc/bloomrpc) to try or [Home brew](https://formulae.brew.sh/cask/bloomrpc)
+
+<br />
+
+### `For Docker`
+
+```shell
+# Build image
+docker build -t cobra-cmd .
+```
+
+> Following a 12-factors model where environment variables are configured via the container's environment variables at runtime instead of injecting them into the code and building into an image.
+
+> Therefore, if you want to use the .env file in the container, you can mount the .env file in the container when starting the container.
+
+```shell
+# Serve public-api-cmd, with container name is public-api. And `public-api-cmd` will be an argument for ENTRYPOINT. We will expose port 8080 and map port 8088 from the host machine to port 8088 inside the container
+# Exam: /app/cobra-cmd public-api-cmd
+docker run --name public-api  -it -p 8088:8088 -v $(pwd)/.env:/app/.env cobra-cmd public-api-cmd
+```
