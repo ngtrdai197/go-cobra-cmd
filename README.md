@@ -56,6 +56,7 @@ Go version: go 1.20
 ├── .env.example
 ├── Makefile
 ├── sqlc.yaml
+├── Dockerfile
 ├── ...
 ...
 ```
@@ -120,3 +121,7 @@ docker build -t cobra-cmd .
 # Exam: /app/cobra-cmd public-api-cmd
 docker run --name public-api  -it -p 8088:8088 -v $(pwd)/.env:/app/.env cobra-cmd public-api-cmd
 ```
+
+<br />
+
+## Happy Coding :tada:
