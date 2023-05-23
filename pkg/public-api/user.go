@@ -16,6 +16,10 @@ type createUserRequest struct {
 	PhoneNumber string `json:"phone_number"     binding:"required"`
 }
 
+type getUserRequest struct {
+	Username string `form:"username"  binding:"required,alphanum"`
+}
+
 type userResponse struct {
 	Username    string    `json:"username"`
 	FullName    string    `json:"full_name"`
@@ -59,6 +63,27 @@ func (s *PublicApiServer) CreateUser(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
+	response := newUserResponse(user)
+	ctx.JSON(http.StatusOK, response)
+}
+
+func (s *PublicApiServer) GetUser(ctx *gin.Context) {
+	var req getUserRequest
+
+	if err := ctx.ShouldBindQuery(&req); err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+
+		return
+	}
+
+	user, err := s.store.GetUser(ctx, req.Username)
+	if err != nil {
+		if pqErr, ok := err.(*pq.Error); ok {
+			ctx.JSON(http.StatusInternalServerError, errorResponse(pqErr))
+		}
+		ctx.JSON(http.StatusNotFound, errorResponse(err))
+	}
+
 	response := newUserResponse(user)
 	ctx.JSON(http.StatusOK, response)
 }

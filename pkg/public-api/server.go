@@ -46,6 +46,7 @@ func (s *PublicApiServer) setupRouter(c *config.Config) {
 	})
 
 	r.POST("/user", s.CreateUser)
+	r.GET("/user", s.GetUser)
 
 	s.router = r
 }
