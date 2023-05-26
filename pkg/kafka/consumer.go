@@ -78,7 +78,7 @@ func NewReaderMessageProcessor(config *config.Config) *ReaderMessageProcessor {
 	return &ReaderMessageProcessor{config: config}
 }
 
-func (s *ReaderMessageProcessor) ProcessMessages(ctx context.Context, r *kafka.Reader, w *kafka.Writer, wg *sync.WaitGroup, workerID int) {
+func (rmp *ReaderMessageProcessor) ProcessMessages(ctx context.Context, r *kafka.Reader, w *kafka.Writer, wg *sync.WaitGroup, workerID int) {
 	defer wg.Done()
 
 	for {
@@ -97,14 +97,14 @@ func (s *ReaderMessageProcessor) ProcessMessages(ctx context.Context, r *kafka.R
 		log.Debug().Str("topic", m.Topic).Int("partition", m.Partition).Int("offset", int(m.Offset)).Time("time", m.Time).Int("worker_id", workerID)
 
 		switch m.Topic {
-		case s.config.KafkaCreateUserSendEmail:
-			Test(s, r, m)
+		case rmp.config.KafkaCreateUserSendEmail:
+			Test(ctx, rmp, r, m)
 		}
 	}
 }
 
-func Test(readerMessage *ReaderMessageProcessor, r *kafka.Reader, m kafka.Message) {
-	defer readerMessage.commitMessage(context.Background(), r, m)
+func Test(ctx context.Context, readerMessage *ReaderMessageProcessor, r *kafka.Reader, m kafka.Message) {
+	defer readerMessage.commitMessage(ctx, r, m)
 	var data TestData
 	err := json.Unmarshal(m.Value, &data)
 	if err != nil {
@@ -113,7 +113,7 @@ func Test(readerMessage *ReaderMessageProcessor, r *kafka.Reader, m kafka.Messag
 	log.Info().Msgf("%s %+v", readerMessage.config.KafkaCreateUserSendEmail, data)
 }
 
-func (s *ReaderMessageProcessor) commitMessage(ctx context.Context, r *kafka.Reader, m kafka.Message) {
+func (rmp *ReaderMessageProcessor) commitMessage(ctx context.Context, r *kafka.Reader, m kafka.Message) {
 	if err := r.CommitMessages(ctx, m); err != nil {
 		log.Warn().Msgf("commitMessage error details=%v", err)
 		return

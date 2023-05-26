@@ -17,6 +17,7 @@ type Config struct {
 	DbSource                 string `mapstructure:"DB_SOURCE" validate:"required"`
 	RedisDb                  int    `validate:"required"`
 	KafkaBrokers             string `mapstructure:"KAFKA_BROKERS" validate:"required"`
+	KafkaConsumerGroup       string `mapstructure:"KAFKA_CONSUMER_GROUP" validate:"required"`
 	KafkaCreateUserSendEmail string `mapstructure:"KAFKA_CREATE_USER_SEND_EMAIL" validate:"required"`
 }
 
@@ -31,6 +32,7 @@ func GetConfig(validator *validator.Validate) (*Config, error) {
 		DbDriver:                 viper.GetString("DB_DRIVER"),
 		DbSource:                 viper.GetString("DB_SOURCE"),
 		KafkaBrokers:             viper.GetString("KAFKA_BROKERS"),
+		KafkaConsumerGroup:       viper.GetString("KAFKA_CONSUMER_GROUP"),
 		KafkaCreateUserSendEmail: viper.GetString("KAFKA_CREATE_USER_SEND_EMAIL"),
 	}
 	if err := validator.StructCtx(context.Background(), c); err != nil {

@@ -40,7 +40,8 @@ var kafkaConsumerCmd = &cobra.Command{
 
 func initConsumer(ctx context.Context, c *config.Config) error {
 	// Kafka Producer
-	kp := kafka.NewProducer(strings.Split(c.KafkaBrokers, ","), c)
+	brokers := strings.Split(c.KafkaBrokers, ",")
+	kp := kafka.NewProducer(brokers, c)
 	defer func(kp *kafka.Producer) {
 		err := kp.Close()
 		if err != nil {
@@ -48,7 +49,7 @@ func initConsumer(ctx context.Context, c *config.Config) error {
 		}
 	}(kp)
 	readerMessageProcessor := kafka.NewReaderMessageProcessor(c)
-	cg := kafka.NewConsumerGroup(strings.Split(c.KafkaBrokers, ","), "create_user_send_email")
+	cg := kafka.NewConsumerGroup(brokers, c.KafkaConsumerGroup)
 	go cg.ConsumeTopic(ctx, getConsumerGroupTopics(c), kp.W, kafka.PoolSize, readerMessageProcessor.ProcessMessages)
 	<-ctx.Done()
 	return nil

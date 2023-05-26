@@ -28,6 +28,4 @@ WORKDIR /app
 # Copy the binary to the production image from the builder stage.
 COPY --from=builder /app/cobra-cmd /app/cobra-cmd
 
-EXPOSE 8088
-
 ENTRYPOINT ["/app/cobra-cmd"]
